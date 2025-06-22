@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员登录 - 系统后台管理</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+            --success: #28a745;
+            --danger: #e53e3e;
+            --warning: #f9ab00;
+            --dark: #343a40;
+            --light: #f8f9fa;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background-attachment: fixed;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+            padding: 35px 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(transparent, rgba(168, 239, 255, 0.5), transparent 30%);
+            animation: rotate 6s linear infinite;
+        }
+
+        @keyframes rotate {
+            100% {
+                transform: rotate(1turn);
+            }
+        }
+
+        .container-inner {
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            height: 50px;
+        }
+
+        h3 {
+            text-align: center;
+            margin: 0 0 25px;
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+            position: relative;
+        }
+
+        h3::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            margin: 10px auto 0;
+            border-radius: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 42px;
+            color: #777;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 14px 14px 40px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+            outline: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        input:focus {
+            border-color: #4285f4;
+            box-shadow: 0 4px 8px rgba(66, 133, 244, 0.15);
+        }
+
+        .form-inline {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .form-inline label {
+            margin-right: 10px;
+            margin-bottom: 0;
+            width: 80px;
+        }
+
+        .form-inline input {
+            width: 120px;
+            padding-left: 12px;
+        }
+
+        .captcha-container {
+            display: flex;
+            align-items: center;
+            margin-left: 10px;
+        }
+
+        .verification-code {
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            padding: 5px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            border: 1px solid #eee;
+            height: 42px;
+        }
+
+        .verification-code:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        .verification-code img {
+            width: 90px;
+            height: 34px;
+            border-radius: 4px;
+        }
+
+        .refresh-icon {
+            margin-left: 8px;
+            color: #5a67d8;
+            font-size: 18px;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #e9ecef;
+            margin: 20px 0;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+        }
+
+        .btn:disabled {
+            background: #ced4da;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .alert {
+            margin-top: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            position: relative;
+            background: #fff8f8;
+            color: var(--danger);
+            border-left: 4px solid var(--danger);
+            animation: fadeIn 0.4s;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .alert-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .alert-icon {
+            margin-right: 10px;
+            font-size: 20px;
+            color: var(--danger);
+        }
+
+        .close {
+            margin-left: 10px;
+            cursor: pointer;
+            color: #777;
+            font-size: 18px;
+            transition: color 0.2s;
+        }
+
+        .close:hover {
+            color: var(--danger);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #777;
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .footer a:hover {
+            color: var(--secondary);
+            text-decoration: underline;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+
+        .remember-forgot div {
+            display: flex;
+            align-items: center;
+        }
+
+        .remember-forgot input[type="checkbox"] {
+            width: auto;
+            margin-right: 5px;
+            transform: scale(1.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group.error input {
+            border-color: var(--danger);
+            background: #fffafa;
+        }
+
+        .shake {
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translateX(-1px); }
+            20%, 80% { transform: translateX(2px); }
+            30%, 50%, 70% { transform: translateX(-3px); }
+            40%, 60% { transform: translateX(3px); }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px 20px;
+            }
+
+            .form-inline {
+                flex-wrap: wrap;
+            }
+
+            .verification-code {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="container-inner">
+        <div class="logo">
+            <i class="fas fa-shield-alt" style="font-size: 48px; color: var(--primary);"></i>
+        </div>
+        <h3>管理员登录</h3>
+        <form id="loginForm" action="#" method="post">
+            <div class="form-group">
+                <label for="user">用户名：</label>
+                <i class="input-icon fas fa-user"></i>
+                <input type="text" name="username" id="user" placeholder="请输入管理员账号" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+                <label for="password">密码：</label>
+                <i class="input-icon fas fa-lock"></i>
+                <input type="password" name="password" id="password" placeholder="请输入密码" autocomplete="off">
+            </div>
+
+            <div class="remember-forgot">
+                <div>
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember" style="display: inline; font-weight: normal;">记住我</label>
+                </div>
+                <div>
+                    <a href="#">忘记密码?</a>
+                </div>
+            </div>
+
+            <div class="form-inline">
+                <label for="vcode">验证码：</label>
+                <input type="text" name="verifycode" id="verifycode" placeholder="请输入验证码">
+                <div class="captcha-container">
+                    <a id="refreshCaptcha" class="verification-code">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='34' viewBox='0 0 90 34'%3E%3Crect width='90' height='34' fill='%23f5f5f5'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='20' fill='%23666'%3E3a4b%3C/text%3E%3C/svg%3E" id="vcode">
+                        <i class="fas fa-sync refresh-icon"></i>
+                    </a>
+                </div>
+            </div>
+
+            <hr/>
+
+            <div class="form-group">
+                <button type="submit" class="btn" id="submitBtn">登录系统</button>
+            </div>
+        </form>
+
+        <!-- 出错显示的信息框 -->
+        <div class="alert" id="errorAlert" style="display: none;">
+            <div class="alert-content">
+                <i class="fas fa-exclamation-triangle alert-icon"></i>
+                <div id="errorMsg"></div>
+            </div>
+            <div class="close" id="closeAlert"><i class="fas fa-times"></i></div>
+        </div>
+
+        <div class="footer">
+            <p>© 2023 后台管理系统 | <a href="#">隐私政策</a> | <a href="#">使用条款</a></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loginForm = document.getElementById('loginForm');
+        const refreshCaptcha = document.getElementById('refreshCaptcha');
+        const captchaImg = document.getElementById('vcode');
+        const errorAlert = document.getElementById('errorAlert');
+        const errorMsg = document.getElementById('errorMsg');
+        const closeAlert = document.getElementById('closeAlert');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // 显示错误信息
+        function showError(message) {
+            errorMsg.innerHTML = `<strong>${message}</strong>`;
+            errorAlert.style.display = 'flex';
+        }
+
+        // 隐藏错误信息
+        closeAlert.addEventListener('click', function() {
+            errorAlert.style.display = 'none';
+        });
+
+        // 刷新验证码
+        function refreshCode() {
+            // 在实际应用中，这里应该调用服务器接口获取新的验证码
+            // 这里使用随机参数来避免缓存
+            const randomCode = generateRandomCode(4);
+            const svgCode = createCaptchaSVG(randomCode);
+            captchaImg.src = "data:image/svg+xml," + encodeURIComponent(svgCode);
+
+            // 添加旋转效果
+            const refreshIcon = document.querySelector('.refresh-icon');
+            refreshIcon.classList.add('fa-spin');
+            setTimeout(() => {
+                refreshIcon.classList.remove('fa-spin');
+            }, 1000);
+        }
+
+        // 生成随机验证码
+        function generateRandomCode(length) {
+            const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        // 创建SVG验证码
+        function createCaptchaSVG(code) {
+            return `<svg xmlns="http://www.w3.org/2000/svg" width="90" height="34" viewBox="0 0 90 34">
+                    <rect width="90" height="34" fill="#f5f5f5"/>
+                    ${generateInterferenceLines(90, 34)}
+                    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                          font-family="monospace" font-size="20" fill="#333">${code}</text>
+                </svg>`;
+        }
+
+        // 生成干扰线
+        function generateInterferenceLines(width, height) {
+            let lines = '';
+            for (let i = 0; i < 6; i++) {
+                const x1 = Math.random() * width;
+                const y1 = Math.random() * height;
+                const x2 = Math.random() * width;
+                const y2 = Math.random() * height;
+                lines += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#ccc" stroke-width="0.5"/>`;
+            }
+            return lines;
+        }
+
+        // 表单提交验证
+        function validateForm() {
+            const username = document.getElementById('user').value.trim();
+            const password = document.getElementById('password').value;
+            const verifycode = document.getElementById('verifycode').value.trim();
+
+            // 重置所有错误状态
+            document.querySelectorAll('.form-group').forEach(el => {
+                el.classList.remove('error');
+            });
+
+            // 验证用户名
+            if (!username) {
+                showError('请输入用户名');
+                document.getElementById('user').parentElement.classList.add('error');
+                document.getElementById('user').focus();
+                return false;
+            }
+
+            // 验证密码
+            if (!password) {
+                showError('请输入密码');
+                document.getElementById('password').parentElement.classList.add('error');
+                document.getElementById('password').focus();
+                return false;
+            }
+
+            // 验证验证码
+            if (!verifycode) {
+                showError('请输入验证码');
+                document.getElementById('verifycode').parentElement.classList.add('error');
+                document.getElementById('verifycode').focus();
+                return false;
+            }
+
+            // 在实际应用中，这里应该通过AJAX验证验证码是否正确
+            // 模拟验证码错误
+            const random = Math.random();
+            if(random > 0.7) {
+                showError('验证码错误，请重新输入');
+                document.getElementById('verifycode').parentElement.classList.add('error');
+                document.getElementById('verifycode').focus();
+                refreshCode();
+                return false;
+            }
+
+            return true;
+        }
+
+        // 输入框移除错误状态
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', function() {
+                this.parentElement.classList.remove('error');
+            });
+        });
+
+        // 初始化刷新验证码
+        refreshCaptcha.addEventListener('click', refreshCode);
+        refreshCode(); // 初始化验证码
+
+        // 表单提交处理
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // 验证表单
+            if (!validateForm()) {
+                loginForm.classList.add('shake');
+                setTimeout(() => {
+                    loginForm.classList.remove('shake');
+                }, 500);
+                return;
+            }
+
+            // 模拟提交效果
+            submitBtn.innerHTML = '登录中... <i class="fas fa-spinner fa-spin"></i>';
+            submitBtn.disabled = true;
+
+            // 模拟登录请求 (在实际应用中会发送AJAX请求)
+            setTimeout(() => {
+                // 50%几率模拟登录成功，50%几率模拟登录失败
+                if(Math.random() > 0.5) {
+                    // 模拟登录成功
+                    submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> 登录成功';
+                    submitBtn.style.background = 'linear-gradient(135deg, var(--success), var(--success))';
+
+                    setTimeout(() => {
+                        alert('登录成功！即将跳转到后台管理页面...');
+                        // 在实际应用中，这里应跳转到管理界面
+                        // window.location.href = '/admin/dashboard.html';
+                    }, 1000);
+                } else {
+                    // 模拟登录失败
+                    submitBtn.innerHTML = '登录系统';
+                    submitBtn.disabled = false;
+
+                    const errors = [
+                        "用户名或密码错误",
+                        "验证码已过期，请刷新重试",
+                        "账号被锁定，请联系管理员",
+                        "登录失败次数过多，请15分钟后重试",
+                        "系统维护中，请稍后再试"
+                    ];
+
+                    const randomError = errors[Math.floor(Math.random() * errors.length)];
+                    showError(randomError);
+                }
+            }, 1500);
+        });
+    });
+</script>
+</body>
+</html>
