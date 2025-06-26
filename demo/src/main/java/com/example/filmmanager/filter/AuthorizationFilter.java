@@ -35,6 +35,8 @@ public class AuthorizationFilter implements Filter {
         URL_PERMISSIONS.put("/admin/users", Permission.USER_MANAGE);
         URL_PERMISSIONS.put("/admin/films", Permission.MOVIE_MANAGE);
         URL_PERMISSIONS.put("/admin/orders", Permission.ORDER_MANAGE);
+        URL_PERMISSIONS.put("/admin/dashboard", Permission.ADMIN_DASHBOARD);
+        URL_PERMISSIONS.put("/user/dashboard", Permission.USER_DASHBOARD);
     }
 
     @Override
@@ -52,7 +54,16 @@ public class AuthorizationFilter implements Filter {
         String contextPath = httpRequest.getContextPath();
         String path = httpRequest.getRequestURI().substring(contextPath.length());
         // 不需要权限的路径直接放行
-        if (path.startsWith("/static/") || path.equals("/login")) {
+/*if (path.startsWith("/static/") || path.equals("/login")) {
+            chain.doFilter(request, response);
+            return;
+        }*/
+        if (path.startsWith("/static/") ||
+                path.equals("/login") ||
+                path.equals("/login.html") ||
+                path.endsWith("/error/403.html")||
+                path.endsWith(".css") ||          // 允许CSS
+                path.endsWith(".js")) {
             chain.doFilter(request, response);
             return;
         }

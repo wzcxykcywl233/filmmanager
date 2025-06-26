@@ -18,7 +18,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         Set<Permission> userPermissions = EnumSet.of(
                 Permission.MOVIE_BROWSE,
                 Permission.MOVIE_SEARCH,
-                Permission.TICKET_PURCHASE
+                Permission.TICKET_PURCHASE,
+                Permission.USER_DASHBOARD
         );
 
         // 管理员权限（包含普通用户所有权限+管理权限）
@@ -26,7 +27,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         adminPermissions.addAll(EnumSet.of(
                 Permission.USER_MANAGE,
                 Permission.MOVIE_MANAGE,
-                Permission.ORDER_MANAGE
+                Permission.ORDER_MANAGE,
+                Permission.ADMIN_DASHBOARD
         ));
 
         ROLE_PERMISSIONS.put(UserRole.REGULAR_USER, userPermissions);

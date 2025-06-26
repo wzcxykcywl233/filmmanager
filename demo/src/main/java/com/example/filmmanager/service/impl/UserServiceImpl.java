@@ -17,7 +17,7 @@ public class UserServiceImpl implements UserService {
     private static final User TEST_ADMIN = new User("admin", "admin123", UserRole.ADMINISTRATOR);
     private static final User TEST_USER = new User("user", "user123", UserRole.REGULAR_USER);
     @Autowired
-    private AuthorizationService authService = new AuthorizationServiceImpl();
+    private AuthorizationService authService /*= new AuthorizationServiceImpl()*/;
 
     @Override
     public User authenticate(String username, String password) {
