@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电影管理系统 - 登录</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            padding: 2.5rem;
+            width: 380px;
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            position: relative;
+        }
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(to right, #1a2a6c, #fdbb2d);
+            border-radius: 2px;
+        }
+        .input-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        input {
+            width: 100%;
+            padding: 14px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        button {
+            background: linear-gradient(to right, #1a2a6c, #3498db);
+            color: white;
+            border: none;
+            padding: 14px;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .error-message {
+            color: #e74c3c;
+            margin-top: 10px;
+            height: 20px;
+            font-weight: 500;
+        }
+        .test-credentials {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+        .test-credentials h3 {
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+        .credential {
+            display: flex;
+            margin-bottom: 0.5rem;
+            align-items: center;
+        }
+        .role-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .admin { background: #3498db; color: white; }
+        .user { background: #2ecc71; color: white; }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <h1>电影管理系统</h1>
+    <form id="loginForm">
+        <div class="input-group">
+            <input type="text" id="username" name="username" placeholder="用户名" required>
+        </div>
+        <div class="input-group">
+            <input type="password" id="password" name="password" placeholder="密码" required>
+        </div>
+        <button type="submit">登 录</button>
+        <div class="error-message" id="errorMessage"></div>
+    </form>
+
+    <div class="test-credentials">
+        <h3>测试账号:</h3>
+        <div class="credential">
+            <span class="role-tag admin">管理员</span>
+            <div>用户名: <strong>admin</strong> | 密码: <strong>admin123</strong></div>
+        </div>
+        <div class="credential">
+            <span class="role-tag user">普通用户</span>
+            <div>用户名: <strong>user</strong> | 密码: <strong>user123</strong></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const errorElement = document.getElementById('errorMessage');
+
+        errorElement.textContent = '';
+
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    username: username,
+                    password: password
+                })
+            });
+
+            if (response.redirected) {
+                if (response.url.includes('?error')) {
+                    errorElement.textContent = '用户名或密码错误！';
+                } else {
+                    // 获取重定向URL中的路径部分
+                    const redirectPath = new URL(response.url).pathname;
+
+                    // 根据角色跳转到不同页面
+                    /*if (username === 'admin') {
+                        window.location.href = '/admin/dashboard';
+                    } else {
+                        window.location.href = '/user/dashboard';
+                    }*/
+                    window.location.href = response.url;
+                }
+            } else {
+                errorElement.textContent = '未知错误，请重试';
+            }
+        } catch (error) {
+            errorElement.textContent = '网络错误: ' + error.message;
+        }
+    });
+
+    // 检查URL参数显示错误信息
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('error')) {
+        document.getElementById('errorMessage').textContent = '用户名或密码错误！';
+    }
+</script>
+</body>
+</html>

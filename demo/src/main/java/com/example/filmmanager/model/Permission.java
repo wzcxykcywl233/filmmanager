@@ -7,5 +7,8 @@ public enum Permission {
     TICKET_PURCHASE,// 购票
     USER_MANAGE,    // 用户管理
     MOVIE_MANAGE,   // 电影管理
-    ORDER_MANAGE    // 订单管理
+    ORDER_MANAGE,    // 订单管理
+    ADMIN_DASHBOARD,   // 管理员仪表盘
+    USER_DASHBOARD     // 用户仪表盘
+
 }

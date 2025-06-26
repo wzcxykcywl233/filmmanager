@@ -1,0 +1,13 @@
+C:\springboot\demo\src\main\java\com\example\filmmanager\controller\admin\TestController.java
+C:\springboot\demo\src\main\java\com\example\filmmanager\controller\admin\UserController.java
+C:\springboot\demo\src\main\java\com\example\filmmanager\DemoApplication.java
+C:\springboot\demo\src\main\java\com\example\filmmanager\filter\AuthorizationFilter.java
+C:\springboot\demo\src\main\java\com\example\filmmanager\model\Permission.java
+C:\springboot\demo\src\main\java\com\example\filmmanager\model\User.java
+C:\springboot\demo\src\main\java\com\example\filmmanager\model\UserRole.java
+C:\springboot\demo\src\main\java\com\example\filmmanager\service\AuthorizationService.java
+C:\springboot\demo\src\main\java\com\example\filmmanager\service\impl\AuthorizationServiceImpl.java
+C:\springboot\demo\src\main\java\com\example\filmmanager\service\impl\UserServiceImpl.java
+C:\springboot\demo\src\main\java\com\example\filmmanager\service\UserService.java
+C:\springboot\demo\src\main\java\com\example\filmmanager\servlet\LoginServlet.java
+C:\springboot\demo\src\main\java\com\example\filmmanager\servlet\Servlet.java
